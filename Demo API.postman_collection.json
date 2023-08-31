@@ -1,0 +1,130 @@
+{
+	"info": {
+		"_postman_id": "dc4410c3-3a3c-48e6-b3c1-97998b9cba0f",
+		"name": "Demo API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5608859"
+	},
+	"item": [
+		{
+			"name": "Active",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:37837/api/articles/active",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "37837",
+					"path": [
+						"api",
+						"articles",
+						"active"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paginated",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:37837/api/articles/paginated?page=1&per_page=2",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "37837",
+					"path": [
+						"api",
+						"articles",
+						"paginated"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "per_page",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Filtered",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:37837/api/articles/filtered?data=2023-08-31&active=1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "37837",
+					"path": [
+						"api",
+						"articles",
+						"filtered"
+					],
+					"query": [
+						{
+							"key": "data",
+							"value": "2023-08-31"
+						},
+						{
+							"key": "active",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"title\": \"Салернитана преговаря за Миши Батшуай3\", \"content\": \"Отборът на Салернитана е започнал преговори за привличането на белгиеца Миши Батшуай. Италианският клуб търси нов нападател и е набелязал 28-годишния футболист на Челси. Батшуай прекара последния сезон под наем в турския Бешикташ, където отбеляза 14 гола в 33 мача с екипа на тима. Ръководството на Челси е готово за поредна раздяла с белгийския футболист, съобщи италианския спортен журналист Джанлука Ди Марцио в социалните мрежи. Лондонският гранд би приел сделка за отдаване под наем с опция за закупуване. Настоящият договор на Миши Батшуай с Челси изтича през 2023 година, но има опция клубът да удължи контракта, за да може след това да се осъществи продажба. \", \"created_at\": \"2022-08-25 13:00:00\", \"publish_at\": \"2022-08-25 13:25:00\", \"status\": \"active\"}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:37837/api/articles/add",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "37837",
+					"path": [
+						"api",
+						"articles",
+						"add"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
