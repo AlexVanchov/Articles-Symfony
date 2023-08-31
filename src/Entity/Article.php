@@ -38,9 +38,9 @@ class Article
     private ?string $content;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=255)
      */
-    private ?int $status;
+    private ?string $status;
 
     public function getId(): ?int
     {
@@ -95,7 +95,7 @@ class Article
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getStatus(): ?string
     {
         return $this->status;
     }

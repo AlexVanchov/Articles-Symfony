@@ -4,16 +4,12 @@ namespace App\Repository;
 
 use App\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 
 /**
  * @extends ServiceEntityRepository<Article>
- *
- * @method Article|null find($id, $lockMode = null, $lockVersion = null)
- * @method Article|null findOneBy(array $criteria, array $orderBy = null)
- * @method Article[]    findAll()
- * @method Article[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ArticleRepository extends ServiceEntityRepository
 {
@@ -41,18 +37,21 @@ class ArticleRepository extends ServiceEntityRepository
     }
 
     /**
-     * Remove an article from the database
+     * Add an article to the database by creating new object from the request
      *
-     * @param Article $entity
-     * @param bool $flush
+     * @param array $data
+     * @throws Exception
      */
-    public function remove(Article $entity, bool $flush = false): void
+    public function addArticle(array $data): void
     {
-        $this->getEntityManager()->remove($entity);
+        $article = new Article();
+        $article->setTitle($data['title']);
+        $article->setContent($data['content']);
+        $article->setPublishAt(new \DateTime($data['publish_at']));
+        $article->setStatus($data['status']);
+        $article->setCreatedAt(new \DateTime());
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        $this->add($article, true);
     }
 
     /**
@@ -69,15 +68,54 @@ class ArticleRepository extends ServiceEntityRepository
 
         if ($filterDate) {
             $filterDateTime = new \DateTime($filterDate);
-            $qb->andWhere('a.publish_at >= :filterDate')
-                ->setParameter('filterDate', $filterDateTime->format('Y-m-d 00:00:00'));
+            $filterStartDateTime = clone $filterDateTime;
+            $filterEndDateTime = clone $filterDateTime;
+            $filterStartDateTime->setTime(0, 0, 0);
+            $filterEndDateTime->setTime(23, 59, 59);
+
+            $qb->andWhere($qb->expr()->between('a.publish_at', ':start', ':end'))
+                ->setParameter('start', $filterStartDateTime)
+                ->setParameter('end', $filterEndDateTime);
         }
 
-        if ($isActiveOnly) {
-            $qb->andWhere('a.status = :statusActive')
-                ->setParameter('statusActive', 'active');
-        }
+        $search_status = $isActiveOnly === '1' ? 'active' : "inactive";
+        $qb->andWhere('a.status =:statusActive')
+            ->setParameter('statusActive', $search_status);
 
-        return $qb->getQuery()->getResult();
+        return $qb->getQuery()->getArrayResult();
+    }
+
+    /**
+     * Gets all active articles
+     *
+     * @return array
+     */
+    public function findActiveArticles(): array
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->andWhere('a.status = :statusActive')
+            ->setParameter('statusActive', 'active');
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
+    /**
+     * Gets articles by pages
+     *
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     */
+    public function findPaginatedResults(int $page, int $perPage): array
+    {
+        $query = $this->createQueryBuilder('a')
+            ->getQuery();
+
+        $paginator = new Paginator($query);
+        return $paginator
+            ->getQuery()
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->getArrayResult();
     }
 }
